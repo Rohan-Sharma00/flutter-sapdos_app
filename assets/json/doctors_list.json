@@ -1,0 +1,129 @@
+{
+  "user": {
+    "greeting": "Hello!",
+    "name": "Satish",
+    "avatar": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+  },
+  "doctorsList": [
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Smith",
+      "specialization": "Cardiology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 512,
+      "rating": 2,
+      "totalRatings": 400,
+      "education": "MBBS, MD",
+      "experience": "8 years",
+      "description": "Dr. Smith is a highly experienced cardiologist with expertise in various heart conditions. He is dedicated to providing personalized care to each patient, ensuring optimal heart health. With a compassionate approach, Dr. Smith strives to make a positive impact on the lives of his patients."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Johnson",
+      "specialization": "Pediatrics",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 450,
+      "rating": 3,
+      "totalRatings": 350,
+      "education": "MBBS, DCH",
+      "experience": "7 years",
+      "description": "Dr. Johnson specializes in pediatric care and has a gentle approach towards children. With a focus on preventive medicine and early intervention, he aims to promote the health and well-being of young patients. Dr. Johnson is committed to providing comprehensive and compassionate care to children and their families."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Brown",
+      "specialization": "Dermatology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 550,
+      "rating": 4,
+      "totalRatings": 450,
+      "education": "MBBS, MD",
+      "experience": "10 years",
+      "description": "Dr. Brown is a renowned dermatologist known for his innovative treatments and compassionate care. With a deep understanding of skin conditions and advanced treatment techniques, he delivers personalized care to each patient. Dr. Brown is committed to helping his patients achieve healthy and radiant skin."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Patel",
+      "specialization": "Orthopedics",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 600,
+      "rating": 5,
+      "totalRatings": 500,
+      "education": "MBBS, MS",
+      "experience": "9 years",
+      "description": "Dr. Patel specializes in orthopedic surgery and provides personalized care to his patients. With expertise in treating a wide range of musculoskeletal conditions, he offers advanced surgical and non-surgical treatment options. Dr. Patel is dedicated to helping his patients regain mobility and improve their quality of life."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Garcia",
+      "specialization": "Oncology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 700,
+      "rating": 1,
+      "totalRatings": 400,
+      "education": "MBBS, MD",
+      "experience": "12 years",
+      "description": "Dr. Garcia is an oncologist known for her compassionate approach and expertise in cancer treatment. With a focus on patient-centered care, she provides comprehensive treatment plans tailored to each individual's needs. Dr. Garcia is committed to supporting her patients through every stage of their cancer journey."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Lee",
+      "specialization": "Neurology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 650,
+      "rating": 4.7,
+      "totalRatings": 450,
+      "education": "MBBS, DM",
+      "experience": "11 years",
+      "description": "Dr. Lee is a neurologist specializing in treating disorders of the nervous system with advanced techniques. With expertise in diagnosing and managing neurological conditions, he provides compassionate care to his patients. Dr. Lee is committed to improving the quality of life for individuals living with neurological disorders."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Kumar",
+      "specialization": "ENT",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 500,
+      "rating": 4.4,
+      "totalRatings": 380,
+      "education": "MBBS, MS",
+      "experience": "8 years",
+      "description": "Dr. Kumar is an ENT specialist known for his expertise in treating ear, nose, and throat conditions. With a focus on evidence-based medicine and advanced treatment modalities, he provides comprehensive care to his patients. Dr. Kumar is dedicated to helping individuals regain their quality of life through effective ENT treatments."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Wong",
+      "specialization": "Gastroenterology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 580,
+      "rating": 4.3,
+      "totalRatings": 420,
+      "education": "MBBS, MD",
+      "experience": "9 years",
+      "description": "Dr. Wong specializes in gastrointestinal disorders and provides comprehensive care to his patients. With expertise in diagnosing and treating digestive system conditions, he offers personalized treatment plans to address each patient's needs. Dr. Wong is committed to improving the digestive health and well-being of his patients."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Gonzalez",
+      "specialization": "Urology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 620,
+      "rating": 4.5,
+      "totalRatings": 490,
+      "education": "MBBS, MS",
+      "experience": "10 years",
+      "description": "Dr. Gonzalez is a urologist known for his surgical skills and compassionate care for urological conditions. With expertise in minimally invasive procedures and advanced treatment techniques, he provides comprehensive care to his patients. Dr. Gonzalez is dedicated to improving the quality of life for individuals with urological issues."
+    },
+    {
+      "doctorImage": "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+      "doctorName": "Dr. Taylor",
+      "specialization": "Ophthalmology",
+      "appointmentIcon": "<URL or path to appointment icon>",
+      "price": 540,
+      "rating": 4.6,
+      "totalRatings": 480,
+      "education": "MBBS, MS",
+      "experience": "9 years",
+      "description": "Dr. Taylor specializes in ophthalmic surgery and provides advanced eye care services to his patients. With expertise in treating a wide range of eye conditions, he offers personalized treatment plans tailored to each individual's needs. Dr. Taylor is committed to helping his patients maintain optimal eye health and vision."
+    }
+  ]
+}
