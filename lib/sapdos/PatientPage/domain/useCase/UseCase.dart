@@ -1,6 +1,5 @@
 import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/entities/AvailabilitySlot.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/repositories/Repository.dart';
-import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 class UseCase {

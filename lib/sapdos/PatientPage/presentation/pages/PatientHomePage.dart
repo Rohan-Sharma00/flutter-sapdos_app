@@ -168,7 +168,7 @@ class PatientHomePage extends StatelessWidget {
                           Expanded(
                             child: FractionallySizedBox(
                                 widthFactor: 0.85,
-                                child: DoctorDetails(context, allData)),
+                                child: SingleChildScrollView(child: DoctorDetails(context, allData))),
                           ),
                         ]))))
               ]))),

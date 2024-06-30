@@ -8,3 +8,4 @@ class DoctorHomePageInitialEvent extends DoctorHomePageEvents {
  final LoginCredentials credentails;
  DoctorHomePageInitialEvent({required this.credentails});
 }
+

@@ -29,7 +29,7 @@ void main() {
 }
 
 final GoRouter _router = GoRouter(
-    initialLocation: '/tp',
+    initialLocation: '/login',
   routes: <RouteBase>[
     
     GoRoute(
@@ -105,12 +105,7 @@ final GoRouter _router = GoRouter(
                 child: DoctorDetailsPage(obj));
           },
         ),
-          GoRoute(
-          path: 'tp',
-          builder: (BuildContext context, GoRouterState state) {
-            return PatientDetailsPage();
-          },
-        ),
+         
       ],
     ),
   ],

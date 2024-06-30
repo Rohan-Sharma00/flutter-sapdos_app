@@ -10,21 +10,21 @@ class DoctorHomePageInitialState extends DoctorHomePageStates {
 }
 
 class DoctorHomePageInitialSuccessState extends DoctorHomePageStates {
- List<PersonCredentials> credentials;
+ List<PersonCredentials> allPatientData;
  PersonCredentials person;
- DoctorHomePageInitialSuccessState({required this.credentials,required this.person});
+ DoctorHomePageInitialSuccessState({required this.allPatientData,required this.person});
 
 }
 
-class LoadingState extends DoctorHomePageStates {
+class DoctorLoadingState extends DoctorHomePageStates {
 
 }
 
-class ErrorState extends DoctorHomePageStates {
+class DoctorErrorState extends DoctorHomePageStates {
  final String message;
   final Color textColor;
 
-  ErrorState(this.message,
+  DoctorErrorState(this.message,
       [this.textColor = Colors.red]);
 }
 

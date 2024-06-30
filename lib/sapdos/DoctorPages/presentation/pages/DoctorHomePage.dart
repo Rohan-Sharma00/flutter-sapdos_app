@@ -3,21 +3,22 @@ import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageBloc.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageEvents.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageStates.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageStates.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/SapdosSideBar.dart';
 
-
-
-
-
 class DoctorHomePage extends StatelessWidget {
-
-   LoginCredentials loginDetails = new LoginCredentials();
+  LoginCredentials loginDetails = new LoginCredentials();
   PersonCredentials credentials = PersonCredentials.emptyObj();
+  List<PersonCredentials> allPatientDetails =  [];
 
   DoctorHomePage({required this.loginDetails});
-  
+
   var patientData = [
     {
       "color": "red",
@@ -185,7 +186,7 @@ class DoctorHomePage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
               ),
               Text(
-                "Dr. Amol ",
+                credentials.name ?? "doctor name",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 50),
               ),
             ],
@@ -274,7 +275,9 @@ class DoctorHomePage extends StatelessWidget {
                             child: Container(
                                 decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: _parseColor(patientData[index]["color"] ?? ""), width: 1.5),
+                                        color: _parseColor(
+                                            patientData[index]["color"] ?? ""),
+                                        width: 1.5),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 margin: EdgeInsets.only(left: 40, right: 40),
@@ -314,67 +317,103 @@ class DoctorHomePage extends StatelessWidget {
         ));
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Row(children: [
-              Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  color: Color(0xFF13235A),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 20, top: 20),
-                          child: Text(
-                            "SAPDOS",
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(color: Colors.white, fontSize: 60),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: FractionallySizedBox(
-                          widthFactor: 0.8,
-                          child: Center(child: DoctorSideBar()),
-                        ),
-                      ),
-                    ],
-                  )),
-              Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Expanded(
-                          child: Column(children: [
-                        FractionallySizedBox(
-                            widthFactor: 0.85, child: firstContainer()),
-                        SizedBox(height: 20),
-                        FractionallySizedBox(
-                          widthFactor: 0.85,
-                          child: Positioned(
-                            left: 5,
-                            child: const Text(
-                              "Today's Appointment ",
-                              style: const TextStyle(fontSize: 15),
+  Widget build(BuildContext context)
+  {
+     print(
+        "in doctor home page logincredentials = ${loginDetails.id} = ${loginDetails.role}");
+    return BlocProvider(
+       create: (context) =>  DoctorHomePageBloc()
+        ..add(DoctorHomePageInitialEvent(credentails: loginDetails)),
+      child: BlocBuilder<DoctorHomePageBloc, DoctorHomePageStates>(
+          builder: (context, state) {
+        if (state is DoctorLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is DoctorErrorState) {
+          return Center(
+              child: Text(
+            state.message,
+            style: TextStyle(
+              color: state.textColor,
+              fontSize: 20,
+            ),
+          ));
+        } else if (state is DoctorHomePageInitialSuccessState) {
+          credentials = state.person;
+         allPatientDetails=state.allPatientData;
+          return Container(child: mainDoctorPage(context));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      }),
+    );
+  }
+
+  BlocProvider mainDoctorPage(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>  DoctorHomePageBloc()
+        ..add(DoctorHomePageInitialEvent(credentails: loginDetails)),
+      child: Scaffold(
+          body: Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Row(children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    color: Color(0xFF13235A),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 20, top: 20),
+                            child: Text(
+                              "SAPDOS",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .copyWith(color: Colors.white, fontSize: 60),
                             ),
                           ),
                         ),
-                        FractionallySizedBox(widthFactor: 0.85, child: Boxes()),
-                        SizedBox(height: 20),
-                        FractionallySizedBox(
-                            widthFactor: 0.85, child: BlueLine()),
-                        SizedBox(height: 15),
                         Expanded(
                           child: FractionallySizedBox(
-                              widthFactor: 0.85, child: appointments()),
+                            widthFactor: 0.8,
+                            child: Center(child: DoctorSideBar()),
+                          ),
                         ),
-                      ]))))
-            ])));
+                      ],
+                    )),
+                Expanded(
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Expanded(
+                            child: Column(children: [
+                          FractionallySizedBox(
+                              widthFactor: 0.85, child: firstContainer()),
+                          SizedBox(height: 20),
+                          FractionallySizedBox(
+                            widthFactor: 0.85,
+                            child: Positioned(
+                              left: 5,
+                              child: const Text(
+                                "Today's Appointment ",
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ),
+                          FractionallySizedBox(
+                              widthFactor: 0.85, child: Boxes()),
+                          SizedBox(height: 20),
+                          FractionallySizedBox(
+                              widthFactor: 0.85, child: BlueLine()),
+                          SizedBox(height: 15),
+                          Expanded(
+                            child: FractionallySizedBox(
+                                widthFactor: 0.85, child: appointments()),
+                          ),
+                        ]))))
+              ]))),
+    );
   }
 }
