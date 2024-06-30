@@ -5,7 +5,7 @@ class Constants {
   static const String getAllDoctorUrl = "Patient/GetAllUser?Role=doctor";
   static const String getDoctorByID = "Doctor/GetDoctorByUId?DoctorUId=";
     static const String getPatientByID = "Patient/GetPatientByUId?PatientUId=";
-
+   static const String getDoctorDashboard = "Doctor/GetDoctorDashbord?DoctorUId=";
   static const String userName = 'userName';
   static const String password = 'password';
   static const String doctorImageUrl =

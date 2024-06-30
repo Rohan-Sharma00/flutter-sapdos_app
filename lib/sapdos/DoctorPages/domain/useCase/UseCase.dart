@@ -1,20 +1,17 @@
-import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/entities/AvailabilitySlot.dart';
-import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/repositories/Repository.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/domain/entities/AllAppointmentEntity.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/domain/repositories/DoctorRepository.dart';
+
 import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 class UseCaseDoctor {
-  RepositoryImpl obj = new RepositoryImpl();
+  DoctorRepositoryImpl obj = new DoctorRepositoryImpl();
 
-  Future<List<PersonCredentials>> fetchAllPatients() async {
-    List<PersonCredentials> list = await obj.fetchAllDoctors();
+  Future<AllAppointmentEntity> fetchAllPatients(LoginCredentials data) async {
+    AllAppointmentEntity appointment = await obj.fetchAllPatients(data.id ?? "");
 
-    return list;
+    return appointment;
   }
 
-  Future<List<AvailabilitySlot>> CallAvailabilitySlot(String id) async {
-    List<AvailabilitySlot> list = await obj.fetchAvailabilitySlot(id);
-
-    return list;
-  }
+  
 }

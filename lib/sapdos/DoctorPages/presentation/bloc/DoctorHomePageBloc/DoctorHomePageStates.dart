@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/domain/entities/AllAppointmentEntity.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 class DoctorHomePageStates{
@@ -10,9 +11,9 @@ class DoctorHomePageInitialState extends DoctorHomePageStates {
 }
 
 class DoctorHomePageInitialSuccessState extends DoctorHomePageStates {
- List<PersonCredentials> allPatientData;
+ AllAppointmentEntity appointment;
  PersonCredentials person;
- DoctorHomePageInitialSuccessState({required this.allPatientData,required this.person});
+ DoctorHomePageInitialSuccessState({required this.appointment,required this.person});
 
 }
 

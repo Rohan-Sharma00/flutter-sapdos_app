@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/domain/entities/AllAppointmentEntity.dart';
 import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageBloc.dart';
 import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageEvents.dart';
 import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/DoctorHomePageBloc/DoctorHomePageStates.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_sapdos_app/sapdos/utils/SapdosSideBar.dart';
 class DoctorHomePage extends StatelessWidget {
   LoginCredentials loginDetails = new LoginCredentials();
   PersonCredentials credentials = PersonCredentials.emptyObj();
-  List<PersonCredentials> allPatientDetails =  [];
+  AllAppointmentEntity appointment = AllAppointmentEntity.getEmptyAppointment();
 
   DoctorHomePage({required this.loginDetails});
 
@@ -113,11 +114,11 @@ class DoctorHomePage extends StatelessWidget {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                            text: '19',
+                            text: '${appointment.pendingAppointment}',
                             style: TextStyle(
                                 color: Color(0xFF13235A), fontSize: 20)),
                         TextSpan(
-                            text: '/40',
+                            text: '/${appointment.totalAppointment}',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 15)),
                       ],
@@ -149,11 +150,11 @@ class DoctorHomePage extends StatelessWidget {
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
-                              text: '21',
+                              text: '${appointment.completedAppointment}',
                               style: TextStyle(
                                   color: Color(0xFF13235A), fontSize: 20)),
                           TextSpan(
-                              text: '/40',
+                              text: '/${appointment.totalAppointment}',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 15)),
                         ],
@@ -246,11 +247,13 @@ class DoctorHomePage extends StatelessWidget {
   }
 
   Container appointments() {
+  
     return Container(
         margin: EdgeInsets.only(bottom: 50),
         child: ListView.builder(
-          itemCount: patientData.length,
+          itemCount: appointment.patientList.length,
           itemBuilder: (context, index) {
+            print("index in doctor home = ${index}");
             return Container(
               margin: EdgeInsets.only(top: 5),
               child: Row(
@@ -258,12 +261,12 @@ class DoctorHomePage extends StatelessWidget {
                   Container(
                     child: Icon(
                       Icons.timer,
-                      color: _parseColor(patientData[index]["color"] ?? ""),
+                      color: appointment.patientList[index].treated ? Colors.green : Colors.red
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 20),
-                    child: Text(patientData[index]["timing"] ?? "",
+                    child: Text(appointment.patientList[index].slotTime ,
                         style: TextStyle(fontSize: 22)),
                   ),
                   Expanded(
@@ -275,8 +278,8 @@ class DoctorHomePage extends StatelessWidget {
                             child: Container(
                                 decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: _parseColor(
-                                            patientData[index]["color"] ?? ""),
+                                        color: 
+                                           appointment.patientList[index].treated ? Colors.green : Colors.red ,
                                         width: 1.5),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
@@ -289,17 +292,17 @@ class DoctorHomePage extends StatelessWidget {
                                       margin: EdgeInsets.only(left: 10),
                                       child: Container(
                                         child: Text(
-                                          "Patient Name : ${patientData[index]["patient_name"] ?? ""}",
+                                          "Patient Name : ${appointment.patientList[index].name }",
                                           style: TextStyle(fontSize: 17),
                                         ),
                                       ),
                                     ),
-                                    Text(patientData[index]["age"] ?? "",
-                                        style: TextStyle(fontSize: 17)),
+                                    // Text(patientData[index]["age"] ?? "",
+                                    //     style: TextStyle(fontSize: 17)),
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
                                       child:
-                                          patientData[index]["color"] == "blue"
+                                         appointment.patientList[index].treated
                                               ? Icon(Icons.check)
                                               : Icon(Icons.pending),
                                     )
@@ -317,12 +320,11 @@ class DoctorHomePage extends StatelessWidget {
         ));
   }
 
-  Widget build(BuildContext context)
-  {
-     print(
+  Widget build(BuildContext context) {
+    print(
         "in doctor home page logincredentials = ${loginDetails.id} = ${loginDetails.role}");
     return BlocProvider(
-       create: (context) =>  DoctorHomePageBloc()
+      create: (context) => DoctorHomePageBloc()
         ..add(DoctorHomePageInitialEvent(credentails: loginDetails)),
       child: BlocBuilder<DoctorHomePageBloc, DoctorHomePageStates>(
           builder: (context, state) {
@@ -338,8 +340,11 @@ class DoctorHomePage extends StatelessWidget {
             ),
           ));
         } else if (state is DoctorHomePageInitialSuccessState) {
+
           credentials = state.person;
-         allPatientDetails=state.allPatientData;
+          appointment = state.appointment;
+          print("doctor credentials = ${credentials.toString()}");
+          print("doctor appointment = ${appointment.toString()}");
           return Container(child: mainDoctorPage(context));
         } else {
           return Center(child: CircularProgressIndicator());
@@ -350,7 +355,7 @@ class DoctorHomePage extends StatelessWidget {
 
   BlocProvider mainDoctorPage(BuildContext context) {
     return BlocProvider(
-      create: (context) =>  DoctorHomePageBloc()
+      create: (context) => DoctorHomePageBloc()
         ..add(DoctorHomePageInitialEvent(credentails: loginDetails)),
       child: Scaffold(
           body: Container(
