@@ -12,6 +12,7 @@ import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDe
 import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/SapdosSideBar.dart';
+import 'package:go_router/go_router.dart';
 
 class DoctorHomePage extends StatelessWidget {
   LoginCredentials loginDetails = new LoginCredentials();
@@ -20,78 +21,6 @@ class DoctorHomePage extends StatelessWidget {
 
   DoctorHomePage({required this.loginDetails});
 
-  var patientData = [
-    {
-      "color": "red",
-      "timing": "10:00 AM",
-      "patient_name": "Alice Johnson",
-      "age": "30 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "green",
-      "timing": "10:15 AM",
-      "patient_name": "David Smith",
-      "age": "28 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "blue",
-      "timing": "10:30 AM",
-      "patient_name": "Emily Brown",
-      "age": "35 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "red",
-      "timing": "10:45 AM",
-      "patient_name": "Michael Davis",
-      "age": "32 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "green",
-      "timing": "11:00 AM",
-      "patient_name": "Sarah Wilson",
-      "age": "27 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "blue",
-      "timing": "11:15 AM",
-      "patient_name": "Kevin Martinez",
-      "age": "29 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "red",
-      "timing": "11:30 AM",
-      "patient_name": "Jessica Taylor",
-      "age": "31 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "green",
-      "timing": "11:45 AM",
-      "patient_name": "Ryan Thompson",
-      "age": "33 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "blue",
-      "timing": "12:00 PM",
-      "patient_name": "Lauren Garcia",
-      "age": "26 years",
-      "icon": "Icons.timer, color: Colors.green"
-    },
-    {
-      "color": "red",
-      "timing": "12:15 PM",
-      "patient_name": "Patrick Clark",
-      "age": "34 years",
-      "icon": "Icons.timer, color: Colors.green"
-    }
-  ];
 
   Container Boxes() {
     return Container(
@@ -246,74 +175,78 @@ class DoctorHomePage extends StatelessWidget {
     }
   }
 
-  Container appointments() {
+  Container appointments(BuildContext context) {
   
     return Container(
         margin: EdgeInsets.only(bottom: 50),
         child: ListView.builder(
           itemCount: appointment.patientList.length,
           itemBuilder: (context, index) {
-            print("index in doctor home = ${index}");
-            return Container(
-              margin: EdgeInsets.only(top: 5),
-              child: Row(
-                children: [
-                  Container(
-                    child: Icon(
-                      Icons.timer,
-                      color: appointment.patientList[index].treated ? Colors.green : Colors.red
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    child: Text(appointment.patientList[index].slotTime ,
-                        style: TextStyle(fontSize: 22)),
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: 
-                                           appointment.patientList[index].treated ? Colors.green : Colors.red ,
-                                        width: 1.5),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                margin: EdgeInsets.only(left: 40, right: 40),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(left: 10),
-                                      child: Container(
-                                        child: Text(
-                                          "Patient Name : ${appointment.patientList[index].name }",
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                      ),
-                                    ),
-                                    // Text(patientData[index]["age"] ?? "",
-                                    //     style: TextStyle(fontSize: 17)),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child:
-                                         appointment.patientList[index].treated
-                                              ? Icon(Icons.check)
-                                              : Icon(Icons.pending),
-                                    )
-                                  ],
-                                )),
-                          ),
-                        ],
+            return InkWell(
+              onTap: () {
+                context.go("/patient/${appointment.patientList[index].patientUId}");
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 5),
+                child: Row(
+                  children: [
+                    Container(
+                      child: Icon(
+                        Icons.timer,
+                        color: appointment.patientList[index].treated ? Colors.green : Colors.red
                       ),
                     ),
-                  ),
-                ],
+                    Container(
+                      margin: EdgeInsets.only(left: 20),
+                      child: Text(appointment.patientList[index].slotTime ,
+                          style: TextStyle(fontSize: 22)),
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: 
+                                             appointment.patientList[index].treated ? Colors.green : Colors.red ,
+                                          width: 1.5),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10))),
+                                  margin: EdgeInsets.only(left: 40, right: 40),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(left: 10),
+                                        child: Container(
+                                          child: Text(
+                                            "Patient Name : ${appointment.patientList[index].name }",
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                      ),
+                                      // Text(patientData[index]["age"] ?? "",
+                                      //     style: TextStyle(fontSize: 17)),
+                                      Container(
+                                        margin: EdgeInsets.only(right: 10),
+                                        child:
+                                           appointment.patientList[index].treated
+                                                ? Icon(Icons.check)
+                                                : Icon(Icons.pending),
+                                      )
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -415,7 +348,7 @@ class DoctorHomePage extends StatelessWidget {
                           SizedBox(height: 15),
                           Expanded(
                             child: FractionallySizedBox(
-                                widthFactor: 0.85, child: appointments()),
+                                widthFactor: 0.85, child: appointments(context)),
                           ),
                         ]))))
               ]))),

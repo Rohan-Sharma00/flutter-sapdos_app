@@ -7,7 +7,10 @@ class LoginCredentials {
      this.role,
   });
 
-  // JSON serialization (fromJson) method
+static LoginCredentials LoginCredentialswithid(String id) {
+    return LoginCredentials(id: id);
+  }
+
   static LoginCredentials fromJson(Map<String, dynamic> json) {
     return LoginCredentials(
       id: json['uId'],

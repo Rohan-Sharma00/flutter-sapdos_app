@@ -29,7 +29,7 @@ void main() {
 }
 
 final GoRouter _router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
   routes: <RouteBase>[
     
     GoRoute(
@@ -99,10 +99,10 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'patient/:id',
           builder: (BuildContext context, GoRouterState state) {
-            PersonCredentials obj = state.extra as PersonCredentials;
+             final String id = state.pathParameters['id']!;
             return BlocProvider(
                 create: (context) => DoctorDetailsPageBloc(),
-                child: DoctorDetailsPage(obj));
+                child: PatientDetailsPage(id));
           },
         ),
          

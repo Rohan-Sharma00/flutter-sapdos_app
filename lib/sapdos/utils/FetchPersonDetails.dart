@@ -6,7 +6,6 @@ import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 Future<PersonCredentials> FetchPersonDetails(LoginCredentials credentials) async {
-   print("in fetch person");
   String url="";
   if(credentials.role=="patient")
   {
@@ -23,6 +22,5 @@ Future<PersonCredentials> FetchPersonDetails(LoginCredentials credentials) async
     print("person api response = ${response}");
     final result = json.decode(response.body);
     PersonCredentials personDetails=PersonCredentials.fromJson(result);
-    print("person details = ${personDetails.toString()}");
     return personDetails;
   }

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/PatientDetailsPageBloc/PatientDetailsPageBloc.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/PatientDetailsPageBloc/PatientDetailsPageEvents.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/bloc/PatientDetailsPageBloc/PatientDetailsPageStates.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/entities/AvailabilitySlot.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageBloc.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageEvents.dart';
@@ -189,11 +192,40 @@ Container blueLineMenu2(BuildContext context) {
 }
 
 class PatientDetailsPage extends StatelessWidget {
-  final PersonCredentials patient =
-      PersonCredentials.tpObj("shadow", "27", "hello world");
-  // PatientDetailsPage(this.patient);
+   PersonCredentials patient = PersonCredentials.emptyObj();
+      
+      String patientID="";
+  PatientDetailsPage(this.patientID);
 
-  Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
+   
+    return BlocProvider(
+      create: (context) => PatientDetailsPageBloc()
+        ..add(PatientDetailsPageInitialEvent(patientId:patientID)),
+      child: BlocBuilder<PatientDetailsPageBloc, PatientDetailsPageStates>(
+          builder: (context, state) {
+        if (state is PatientLoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is PatientErrorState) {
+          return Center(
+              child: Text(
+            state.message,
+            style: TextStyle(
+              color: state.textColor,
+              fontSize: 20,
+            ),
+          ));
+        } else if (state is PatientDetailsPageInitialSuccessState) {
+         patient=state.person;
+          return Container(child: mainFunction(context));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      }),
+    );
+  }
+
+  BlocProvider mainFunction(BuildContext context) {
     return BlocProvider(
       create: (context) => DoctorDetailsPageBloc()
         ..add(DoctorDetailsPageSlotsEvent(patient.id ?? "null")),
@@ -322,13 +354,15 @@ class PatientDetailsPage extends StatelessWidget {
                       widthFactor: 0.9,
                       heightFactor: 0.9,
                       child: Container(
-                          child: Column(
-                        children: [
-                          blueLineMenu1(context),
-                          SizedBox(height: 10,),
-                          blueLineMenu2(context),
-                        ],
-                      )))))
+                          child: SingleChildScrollView(
+                            child: Column(
+                                                    children: [
+                            blueLineMenu1(context),
+                            SizedBox(height: 10,),
+                            blueLineMenu2(context),
+                                                    ],
+                                                  ),
+                          )))))
         ],
       )),
     );
