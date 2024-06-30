@@ -1,19 +1,30 @@
-import 'dart:html';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_sapdos_app/sapdos/PatientPage/data/models/DoctorDataModel.dart';
-import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/pages/DoctorDetailsPage.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/data/data_sources/ApiServicePatient.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/PatientHomePageBloc/PatientHomePageBloc.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/PatientHomePageBloc/PatientHomePageEvents.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/PatientHomePageBloc/PatientHomePageStates.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/widgets/widgets.dart';
+
+import 'package:flutter_sapdos_app/sapdos/utils/Constants.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/SapdosSideBar.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 class PatientHomePage extends StatelessWidget {
+  LoginCredentials loginDetails = new LoginCredentials();
+  PersonCredentials credentials = PersonCredentials.emptyObj();
+
+  PatientHomePage({required this.loginDetails});
+
+  Future<dynamic> _loadJsonData() async {
+    String url = Constants.baseUrl + Constants.getAllDoctorUrl;
+    ApiServicePatient apiService = new ApiServicePatient(url: url, body: "");
+    final response = apiService.executeApiGet();
+    return response;
+  }
+
   Row firstContainer() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,7 +38,7 @@ class PatientHomePage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
               ),
               Text(
-                "Satish",
+                "${credentials.name}",
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 50),
               ),
             ],
@@ -77,180 +88,90 @@ class PatientHomePage extends StatelessWidget {
     );
   }
 
-  Future<DataModel> _loadJsonData() async {
-    var json = await rootBundle.loadString('json/doctors_list.json');
-    var decodedData = jsonDecode(json);
-    return DataModel.fromJson(decodedData);
-  }
-
-  Widget futureBuild(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: FutureBuilder<DataModel>(
-          future: _loadJsonData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error loading data'));
-            } else {
-              DataModel data = snapshot.data!;
-              return DoctorDetails(context,data.doctorsList);
-            }
-          },
-        ),
-      ),
+  Widget build(BuildContext context) {
+    print(
+        "in patient home page logincredentials = ${loginDetails.id} = ${loginDetails.role}");
+    return BlocProvider(
+      create:(context) => PatientHomePageBloc()
+        ..add(PatientHomePageInitialEvent(credentails: loginDetails)),
+      child: BlocBuilder<PatientHomePageBloc, PatientHomePageStates>(
+          builder: (context, state) {
+        if (state is LoadingState) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ErrorState) {
+          return Center(
+              child: Text(
+            state.message,
+            style: TextStyle(
+              color: state.textColor,
+              fontSize: 20,
+            ),
+          ));
+        } else if (state is PatientHomePageInitialSuccessState) {
+          credentials = state.person;
+          List<PersonCredentials> allData = state.credentials;
+          return Container(child: MainPage(context, allData));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      }),
     );
   }
 
-  InkWell DoctorBox(BuildContext context,var doctor) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DoctorDetailsPage( doctor);
-        }));
-      },
-      child: Container(
-          margin: EdgeInsets.only(left: 10, right: 10),
-          child: Padding(
-              padding: EdgeInsets.all(1),
+  BlocProvider MainPage(BuildContext context, List<PersonCredentials> allData) {
+    return BlocProvider(
+      create: (context) => PatientHomePageBloc(),
+      child: Scaffold(
+          body: Container(
+              height: double.infinity,
+              width: double.infinity,
               child: Row(children: [
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(doctor.doctorImage),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Doctor's Name : ${doctor.doctorName}",
-                          style: TextStyle(fontWeight: FontWeight.w700)),
-                      Text(doctor.specialization),
-                      RatingBar.builder(
-                        ignoreGestures: true,
-                        initialRating: doctor.rating,
-                        minRating: doctor.rating,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                         tapOnlyMode: false,
-                        onRatingUpdate: (rating) {
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ]))),
-    );
-  }
-
-  Container DoctorDetails(BuildContext context,List<Doctor> data) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: List.generate(data.length, (index) {
-          return FractionallySizedBox(
-            widthFactor: 0.45,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color(0xffDCE0ED),
-              ),
-              margin: EdgeInsets.only(left: 10, right: 10),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: DoctorBox(context,data[index]),
-              ),
-            ),
-          );
-        }).expand((widget) => [widget, SizedBox(width: 8)]).toList(),
-      ),
-    );
-  }
-
-  void getDataFromJson() {
-    FutureBuilder<DataModel>(
-      future: _loadJsonData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading data'));
-        } else {
-          DataModel data = snapshot.data!;
-          // return Container(color:Colors.amber,child: Text(data.doctorsList[0].specialization));
-          return DoctorDetails(context,data.doctorsList);
-        }
-      },
-    );
-  }
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Row(children: [
-              Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  color: Color(0xFF13235A),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 20, top: 20),
-                          child: Text(
-                            "SAPDOS",
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(color: Colors.white, fontSize: 60),
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    color: Color(0xFF13235A),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 20, top: 20),
+                            child: Text(
+                              "SAPDOS",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .copyWith(color: Colors.white, fontSize: 60),
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: FractionallySizedBox(
-                          widthFactor: 0.8,
-                          child: Center(child: DoctorSideBar()),
-                        ),
-                      ),
-                    ],
-                  )),
-              Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Expanded(
-                          child: Column(children: [
-                        FractionallySizedBox(
-                            widthFactor: 0.85, child: firstContainer()),
-                        SizedBox(height: 20),
-                        SizedBox(height: 20),
-                        FractionallySizedBox(
-                            widthFactor: 0.85, child: BlueLine()),
-                        SizedBox(height: 15),
                         Expanded(
                           child: FractionallySizedBox(
-                            widthFactor: 0.85,
-                            child: futureBuild(context),
+                            widthFactor: 0.8,
+                            child: Center(child: DoctorSideBar()),
                           ),
                         ),
-                      ]))))
-            ])));
+                      ],
+                    )),
+                Expanded(
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Expanded(
+                            child: Column(children: [
+                          FractionallySizedBox(
+                              widthFactor: 0.85, child: firstContainer()),
+                          SizedBox(height: 20),
+                          SizedBox(height: 20),
+                          FractionallySizedBox(
+                              widthFactor: 0.85, child: BlueLine()),
+                          SizedBox(height: 15),
+                          Expanded(
+                            child: FractionallySizedBox(
+                                widthFactor: 0.85,
+                                child: DoctorDetails(context, allData)),
+                          ),
+                        ]))))
+              ]))),
+    );
   }
 }

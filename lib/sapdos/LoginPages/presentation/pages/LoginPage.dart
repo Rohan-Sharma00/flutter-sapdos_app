@@ -5,19 +5,20 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/pages/DoctorPage.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/pages/DoctorHomePage.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/LoginPageBloc/LoginPageBloc.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/LoginPageBloc/LoginPageEvents.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/LoginPageBloc/LoginPageStates.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/RegistrationPageBloc/RegistrationPageBloc.dart';
-import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/pages/RegistrationPage.dart';
+import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/pages/RegistrationPagePatient.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/pages/DoctorDetailsPage.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/pages/PatientHomePage.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatelessWidget {
   bool isChecked = false;
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  var emailController = TextEditingController(text: 'doctoradmin@gmail.com');
+  var passwordController = TextEditingController(text: 'admin');
 
   Text styledText(String message, String color) {
     Color textColor = Colors.black;
@@ -26,6 +27,10 @@ class LoginPage extends StatelessWidget {
       textColor = Colors.green;
     } else if (color.toLowerCase() == 'red') {
       textColor = Colors.red;
+    }
+    else
+    {
+      textColor = Colors.yellow;
     }
     return Text(
       message,
@@ -209,27 +214,30 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     )),
-                  
-
                     BlocConsumer<LoginPageBloc, LoginPageStates>(
                         builder: (context, state) {
                       return Container();
                     }, listener: (context, state) {
                       if (state is LoginPageSuccessStatusState) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PatientHomePage()));
+                        if(state.credentails.role=="doctor")
+                        {
+                         context.go('/doctorHome',extra: state.credentails);
+
+                        }
+                         else
+                         {
+                                context.go('/patientHome',extra: state.credentails);
+
+                         }
                       }
                     }),
-
                     BlocBuilder<LoginPageBloc, LoginPageStates>(
                       builder: (context, state) {
                         if (state is LoginPageStatusState) {
                           return Container(
-                              child: styledText(state.message, "red"));
+                              child: styledText(state.message, state.textColor));
                         }
-                      
+
                         return Container();
                       },
                     ),
@@ -244,13 +252,7 @@ class LoginPage extends StatelessWidget {
                             Text("Not on sapdos?"),
                             InkWell(
                               onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return BlocProvider(
-                              create: (context) => RegistrationPageBloc(),
-                              child: RegistrationPage(),
-                            );
-                                }));
+                                context.go('/patientRegistration');
                               },
                               child: Text(
                                 "Sign Up",

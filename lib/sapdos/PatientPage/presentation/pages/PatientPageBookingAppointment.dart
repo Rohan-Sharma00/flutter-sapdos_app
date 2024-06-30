@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 enum PaymentMethod {
   NetBanking,
@@ -213,44 +214,49 @@ class _PatientPageBookingAppointment
               Container(
                   child: FractionallySizedBox(
                 widthFactor: 0.5,
-                child: Column(
-                  children: [
-                    Text("Booking Appointment",
-                        style: Theme.of(context).textTheme.displayMedium),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            margin: EdgeInsets.only(top: 45),
-                            child: FractionallySizedBox(
-                              child: Container(
-                                child: DropdownMenu(
-                                    label: Text("Payment Methods"),
-                                    menuHeight: 200,
-                                    width: 300,
-                                    hintText: "Select",
-                                    onSelected: (method) {
-                                      if (method!.name == "Card") {
-                                        setState(() {
-                                          isCard = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          isCard = false;
-                                        });
-                                      }
-                                    },
-                                    dropdownMenuEntries: PaymentMethod.values
-                                        .map((method) => DropdownMenuEntry(
-                                            value: method, label: method.name))
-                                        .toList()),
-                              ),
-                            )),
-                        Text("Select mode of payment you prefer"),
-                        isCard ? cardDetails(context) : Container(),
-                      ],
-                    )
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text("Booking Appointment",
+                          style: Theme.of(context).textTheme.displayMedium),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(top: 45),
+                              child: FractionallySizedBox(
+                                child: Container(
+                                  child: DropdownMenu(
+                                      label: Text("Payment Methods"),
+                                      menuHeight: 200,
+                                      width: 300,
+                                      hintText: "Select",
+                                      onSelected: (method) {
+                                        if (method!.name == "Card") {
+                                          setState(() {
+                                            isCard = true;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            isCard = false;
+                                          });
+                                        }
+                                      },
+                                      dropdownMenuEntries: PaymentMethod.values
+                                          .map((method) => DropdownMenuEntry(
+                                              value: method, label: method.name))
+                                          .toList()),
+                                ),
+                              )),
+                          Text("Select mode of payment you prefer"),
+                          isCard ? cardDetails(context) : Container(),
+                        ],
+                      ),
+                       SizedBox(height: 20,),
+                       
+                  
+                    ],
+                  ),
                 ),
               )),
             ]))

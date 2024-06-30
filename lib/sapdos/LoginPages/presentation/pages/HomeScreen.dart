@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/pages/DoctorPage.dart';
+import 'package:flutter_sapdos_app/sapdos/DoctorPages/presentation/pages/DoctorHomePage.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/LoginPageBloc/LoginPageBloc.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/bloc/RegistrationPageBloc/RegistrationPageBloc.dart';
 import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/pages/LoginPage.dart';
-import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/pages/RegistrationPage.dart';
+import 'package:flutter_sapdos_app/sapdos/LoginPages/presentation/pages/RegistrationPagePatient.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -67,13 +68,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return BlocProvider(
-                              create: (context) => LoginPageBloc(),
-                              child: LoginPage(),
-                            );
-                          }));
+                         context.go('/login');
                         },
                         child: Text(
                           "Login",
@@ -94,13 +89,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return BlocProvider(
-                              create: (context) => RegistrationPageBloc(),
-                              child: RegistrationPage(),
-                            );
-                          }));
+                          context.go('/patientRegistration');
                         },
                         child: Text(
                           "SIGN-UP",
@@ -114,10 +103,7 @@ class HomeScreen extends StatelessWidget {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return DoctorPage();
-                          }));
+                        
                         },
                         child: Text(
                           "Proceed as a Guest",

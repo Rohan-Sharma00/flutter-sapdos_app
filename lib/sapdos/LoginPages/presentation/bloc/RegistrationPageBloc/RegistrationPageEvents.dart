@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 abstract class RegistrationPageEvents {}
 
@@ -6,6 +7,18 @@ class RegistrationPageEmailEvent extends RegistrationPageEvents {
   final String email;
   final Color textColor;
   RegistrationPageEmailEvent(this.email,{this.textColor=Colors.red});
+}
+
+class RegistrationPageMobileEvent extends RegistrationPageEvents {
+  final String mobile;
+  final Color textColor;
+  RegistrationPageMobileEvent(this.mobile,{this.textColor=Colors.red});
+}
+
+class RegistrationPageAgeEvent extends RegistrationPageEvents {
+  final String age;
+  final Color textColor;
+  RegistrationPageAgeEvent(this.age,{this.textColor=Colors.red});
 }
 
 class RegistrationPagePasswordEvent extends RegistrationPageEvents {
@@ -24,8 +37,7 @@ class RegistrationPageConfirmPasswordEvent extends RegistrationPageEvents {
 }
 
 class RegistrationPageSubmitEvent extends RegistrationPageEvents {
-  final String email;
-  final String password;
-  RegistrationPageSubmitEvent(this.email, this.password);
+  final PersonCredentials credential;
+  RegistrationPageSubmitEvent(this.credential);
 }
 

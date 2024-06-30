@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
+
 abstract class LoginPageStates{}
 
 class LoginPageInitialState extends LoginPageStates{
@@ -26,11 +29,12 @@ LoginPagePasswordValidState(this.message);
 
 class LoginPageStatusState extends LoginPageStates{
 final String message;
-LoginPageStatusState(this.message);
+final String textColor;
+LoginPageStatusState(this.message ,[this.textColor = "red"]);
 }
 
 class LoginPageSuccessStatusState extends LoginPageStates{
-final String message;
-LoginPageSuccessStatusState(this.message);
+final LoginCredentials credentails;
+LoginPageSuccessStatusState(this.credentails);
 }
 

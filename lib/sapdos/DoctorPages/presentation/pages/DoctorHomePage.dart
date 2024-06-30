@@ -3,12 +3,21 @@ import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/LoginCredentials.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 import 'package:flutter_sapdos_app/sapdos/utils/SapdosSideBar.dart';
 
 
 
 
-class DoctorPage extends StatelessWidget {
+
+class DoctorHomePage extends StatelessWidget {
+
+   LoginCredentials loginDetails = new LoginCredentials();
+  PersonCredentials credentials = PersonCredentials.emptyObj();
+
+  DoctorHomePage({required this.loginDetails});
+  
   var patientData = [
     {
       "color": "red",

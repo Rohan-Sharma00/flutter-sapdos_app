@@ -25,15 +25,23 @@ class RegistrationPageConfirmPasswordState extends RegistrationPageStates {
       [this.textColor = Colors.red]);
 }
 
+class RegistrationPageMobileState extends RegistrationPageStates {
+  final String message;
+  final Color textColor;
+  RegistrationPageMobileState(this.message, [this.textColor = Colors.red]);
+}
+
+class RegistrationPageAgeState extends RegistrationPageStates {
+  final String message;
+  final Color textColor;
+  RegistrationPageAgeState(this.message, [this.textColor = Colors.red]);
+}
+
 class RegistrationPageResponseState extends RegistrationPageStates {
   final String message;
   final Color textColor;
 
   RegistrationPageResponseState(this.message,
       [this.textColor = Colors.red]);
-}
-
-class RegistrationSuccessState extends RegistrationPageStates {
-  
 }
 

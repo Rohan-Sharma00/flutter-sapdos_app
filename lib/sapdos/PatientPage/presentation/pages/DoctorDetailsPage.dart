@@ -1,36 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/data/models/DoctorDataModel.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/domain/entities/AvailabilitySlot.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageBloc.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageEvents.dart';
+import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/bloc/DoctorDetailsPageBloc/DoctorDetailsPageStates.dart';
 import 'package:flutter_sapdos_app/sapdos/PatientPage/presentation/pages/PatientPageBookingAppointment.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/Constants.dart';
+import 'package:flutter_sapdos_app/sapdos/utils/PersonCredentials.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
-var timings = [
-  "10:00 AM to 10:15 AM",
-  "10:15 AM to 10:30 AM",
-  "10:30 AM to 10:45 AM",
-  "10:45 AM to 11:00 AM",
-  "11:00 AM to 11:15 AM",
-  "11:15 AM to 11:30 AM",
-  "11:30 AM to 11:45 AM",
-  "11:45 AM to 12:00 PM",
-  "12:00 PM to 12:15 PM",
-  "12:15 PM to 12:30 PM",
-  "12:30 PM to 12:45 PM",
-  "12:45 PM to 1:00 PM",
-  "1:00 PM to 1:15 PM",
-  "1:15 PM to 1:30 PM",
-  "1:30 PM to 1:45 PM",
-  "1:45 PM to 2:00 PM",
-  "2:00 PM to 2:15 PM",
-  "2:15 PM to 2:30 PM",
-  "2:30 PM to 2:45 PM",
-  "2:45 PM to 3:00 PM"
-];
+
 
 class Slots extends StatefulWidget {
+   final List<AvailabilitySlot> slots;
+
+  Slots({required this.slots});
+  
   @override
   _SlotsState createState() => _SlotsState();
 }
@@ -45,7 +36,7 @@ class _SlotsState extends State<Slots> {
         spacing: 8.0,
         runSpacing: 8.0,
         children: List.generate(
-          timings.length,
+          widget.slots.length,
           (index) {
             return FractionallySizedBox(
               widthFactor: 0.3,
@@ -62,7 +53,7 @@ class _SlotsState extends State<Slots> {
                     },
                   ),
                   title: Text(
-                    timings[index],
+                    widget.slots[index].time,
                     style: TextStyle(fontSize: 25),
                   ),
                 ),
@@ -76,7 +67,7 @@ class _SlotsState extends State<Slots> {
 }
 
 class DoctorDetailsPage extends StatelessWidget {
-  final Doctor doctor;
+  final PersonCredentials doctor;
 
   DoctorDetailsPage(this.doctor);
 
@@ -119,236 +110,267 @@ class DoctorDetailsPage extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
-      children: [
-        Container(
-            height: MediaQuery.of(context).size.height * 0.6,
-            width: double.infinity,
-            child: Row(children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.4,
-                child: FractionallySizedBox(
-                    widthFactor: 0.7,
-                    heightFactor: 0.9,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF7E91D4),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: FractionallySizedBox(
-                            widthFactor: 0.6,
-                            heightFactor: 0.8,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: SizedBox.fromSize(
-                                size: Size.fromRadius(48),
-                                child: Image.network(doctor.doctorImage,
-                                    fit: BoxFit.cover),
-                              ),
-                            )))),
-              ),
-              Expanded(
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 1,
+    return BlocProvider(
+      create: (context) => DoctorDetailsPageBloc()..add(DoctorDetailsPageSlotsEvent(doctor.id ?? "null")),
+      child: Scaffold(
+          body: Column(
+        children: [
+          Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              width: double.infinity,
+              child: Row(children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.4,
                   child: FractionallySizedBox(
-                    heightFactor: 0.9,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Container(
-                                child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                      child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                          child: Row(
-                                        children: [
-                                          Container(
-                                              child: Row(children: [
-                                            Icon(Icons.person, size: 40),
-                                            SizedBox(width: 6),
-                                            Text(
-                                              doctor.doctorName,
-                                              style: TextStyle(fontSize: 30),
-                                            )
-                                          ])),
-                                        ],
-                                      )),
-                                      Container(
-                                          child: Row(
-                                        children: [
-                                          Container(
-                                              child: Row(children: [
-                                            Icon(FontAwesomeIcons.userDoctor,
-                                                size: 40),
-                                            SizedBox(width: 6),
-                                            Text(
-                                              doctor.specialization,
-                                              style: TextStyle(fontSize: 25),
-                                            )
-                                          ])),
-                                        ],
-                                      )),
-                                      Container(
-                                          child: Row(
-                                        children: [
-                                          Container(
-                                              child: Row(children: [
-                                            Icon(
-                                                Icons
-                                                    .cast_for_education_rounded,
-                                                size: 40),
-                                            SizedBox(width: 6),
-                                            Text(
-                                              doctor.education,
-                                              style: TextStyle(fontSize: 25),
-                                            )
-                                          ])),
-                                        ],
-                                      ))
-                                    ],
-                                  )),
-                                ),
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                    child: Center(
-                                      child: Container(
-                                          child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Container(
-                                            child: Row(
-                                              children: [
-                                                RatingBar.builder(
-                                                  ignoreGestures: true,
-                                                  initialRating: doctor.rating,
-                                                  minRating: doctor.rating,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: true,
-                                                  itemCount: 5,
-                                                  itemBuilder: (context, _) =>
-                                                      Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  tapOnlyMode: false,
-                                                  onRatingUpdate: (rating) {},
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  "${doctor.totalRatings}",
-                                                  style:
-                                                      TextStyle(fontSize: 20),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                              child: Row(
-                                            children: [
-                                              Container(
-                                                  child: Row(children: [
-                                                SizedBox(
-                                                    height: 70,
-                                                    width: 70,
-                                                    child: Image.asset(
-                                                        "experienceIcon.png")),
-                                                SizedBox(width: 6),
-                                                Text(
-                                                  doctor.experience,
-                                                  style:
-                                                      TextStyle(fontSize: 25),
-                                                )
-                                              ])),
-                                            ],
-                                          )),
-                                        ],
-                                      )),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )),
+                      widthFactor: 0.7,
+                      heightFactor: 0.9,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFF7E91D4),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          Expanded(
-                            flex: 5,
-                            child: Container(
-                              child: Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(right: 60),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Description :",
-                                        style: TextStyle(fontSize: 25),
+                          child: FractionallySizedBox(
+                              widthFactor: 0.6,
+                              heightFactor: 0.8,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: SizedBox.fromSize(
+                                  size: Size.fromRadius(48),
+                                  child: Image.network(Constants.doctorImageUrl,
+                                      fit: BoxFit.cover),
+                                ),
+                              )))),
+                ),
+                Expanded(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 1,
+                    child: FractionallySizedBox(
+                      heightFactor: 0.9,
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                  child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                            child: Row(
+                                          children: [
+                                            Container(
+                                                child: Row(children: [
+                                              Icon(Icons.person, size: 40),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                doctor.name ?? "doctor name",
+                                                style: TextStyle(fontSize: 30),
+                                              )
+                                            ])),
+                                          ],
+                                        )),
+                                        Container(
+                                            child: Row(
+                                          children: [
+                                            Container(
+                                                child: Row(children: [
+                                              Icon(FontAwesomeIcons.userDoctor,
+                                                  size: 40),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                doctor.specialization ??
+                                                    "unknown",
+                                                style: TextStyle(fontSize: 25),
+                                              )
+                                            ])),
+                                          ],
+                                        )),
+                                        Container(
+                                            child: Row(
+                                          children: [
+                                            Container(
+                                                child: Row(children: [
+                                              Icon(
+                                                  Icons
+                                                      .cast_for_education_rounded,
+                                                  size: 40),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                doctor.specialization ??
+                                                    "unknown",
+                                                style: TextStyle(fontSize: 25),
+                                              )
+                                            ])),
+                                          ],
+                                        ))
+                                      ],
+                                    )),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      child: Center(
+                                        child: Container(
+                                            child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  RatingBar.builder(
+                                                    ignoreGestures: true,
+                                                    initialRating: 2,
+                                                    minRating: 2,
+                                                    direction: Axis.horizontal,
+                                                    allowHalfRating: true,
+                                                    itemCount: 5,
+                                                    itemBuilder: (context, _) =>
+                                                        Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                    ),
+                                                    tapOnlyMode: false,
+                                                    onRatingUpdate: (rating) {},
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    "${2}",
+                                                    style:
+                                                        TextStyle(fontSize: 20),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                                child: Row(
+                                              children: [
+                                                Container(
+                                                    child: Row(children: [
+                                                  SizedBox(
+                                                      height: 70,
+                                                      width: 70,
+                                                      child: Image.asset(
+                                                          "experienceIcon.png")),
+                                                  SizedBox(width: 6),
+                                                  Text(
+                                                    doctor.experience
+                                                        .toString(),
+                                                    style:
+                                                        TextStyle(fontSize: 25),
+                                                  )
+                                                ])),
+                                              ],
+                                            )),
+                                          ],
+                                        )),
                                       ),
-                                      Text(doctor.description),
-                                    ]),
+                                    ),
+                                  )
+                                ],
                               )),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 60),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Description :",
+                                          style: TextStyle(fontSize: 25),
+                                        ),
+                                        Text(doctor.description ?? "unknown"),
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ])),
-        Expanded(
-            child: Container(
-                child: FractionallySizedBox(
-                    widthFactor: 0.9,
-                    heightFactor: 0.9,
-                    child: Container(
-                        child: Column(
-                      children: [
-                        BlueLine(),
-                        Expanded(
-                            flex: 3,
-                            child: FractionallySizedBox(
-                              heightFactor: 0.7,
-                              child: Container(child: Slots()),
-                            )),
-                        Expanded(
-                            flex: 1,
-                            child: Container(
-                                child: Center(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return PatientPageBookingAppointment();
-                            }));
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(Color(0xFF13235A) ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius
-                                          .zero, 
+              ])),
+          Expanded(
+              child: Container(
+                  child: FractionallySizedBox(
+                      widthFactor: 0.9,
+                      heightFactor: 0.9,
+                      child: Container(
+                          child: Column(
+                        children: [
+                          BlueLine(),
+                          Expanded(
+                              flex: 3,
+                              child: FractionallySizedBox(
+                                heightFactor: 0.7,
+                                // child: Container(child: Slots()),
+                                child:BlocBuilder<DoctorDetailsPageBloc,
+                                        DoctorDetailsPageStates>(
+                                    builder: (context, state) {
+                                  if (state is LoadingState) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (state is ErrorState) {
+                                    return Center(
+                                        child: Text(
+                                      state.message,
+                                      style: TextStyle(
+                                        color: state.textColor,
+                                        fontSize: 20,
+                                      ),
+                                    ));
+                                  } else if (state
+                                      is DoctorDetailsPageSlotsState) {
+                                    return Container(
+                                        child: SingleChildScrollView(child: Slots(slots:state.credentials))
+                                        );
+                                  } else {
+                                    return Center(
+                                        child: Text('Loading Data ..',style: TextStyle(color: Colors.yellow),));
+                                  }
+                                })
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                  child: Center(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    context.go('/payment');
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Color(0xFF13235A)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.zero,
+                                      ),
                                     ),
                                   ),
+                                  child: Text(
+                                    "Book Appointment",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                                child: Text("Book Appointment",style: TextStyle(color:Colors.white),),
-                              ),
-                            )))
-                      ],
-                    )))))
-      ],
-    ));
+                              )))
+                        ],
+                      )))))
+        ],
+      )),
+    );
   }
 }
